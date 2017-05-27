@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <import type="io.codetail.airplanes.domain.Ticket"/>
+    <variable name="ticket" type="Ticket"/>
+  </data>
+
+  <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:weightSum="11">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="wrap_content">
+
+      <android.support.v7.widget.AppCompatTextView
+          android:id="@+id/departure_city"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{ticket.departure.city}"
+          tools:text="Tashkent\nUzbekistan"
+          style="@style/AppTheme.Ticket.City"
+      />
+
+      <android.support.v7.widget.AppCompatTextView
+          android:id="@+id/departure_country"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{ticket.departure.country}"
+          tools:text="Tashkent\nUzbekistan"
+          style="@style/AppTheme.Ticket.Country"
+      />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_forward_black_24dp"
+        android:layout_gravity="center_vertical"
+        app:tint="?android:textColorSecondary"
+    />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="wrap_content">
+
+      <android.support.v7.widget.AppCompatTextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{ticket.back.city}"
+          tools:text="Tashkent\nUzbekistan"
+          style="@style/AppTheme.Ticket.City"
+      />
+
+      <android.support.v7.widget.AppCompatTextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{ticket.back.country}"
+          tools:text="Tashkent\nUzbekistan"
+          style="@style/AppTheme.Ticket.Country"
+      />
+    </LinearLayout>
+  </LinearLayout>
+</layout>

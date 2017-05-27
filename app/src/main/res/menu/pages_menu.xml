@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+      android:id="@+id/action_page_home"
+      android:icon="@drawable/ic_home_black_24dp"
+      android:title="@string/action_page_home"
+  />
+
+  <item
+      android:id="@+id/action_page_interested"
+      android:icon="@drawable/ic_assignment_ind_black_24dp"
+      android:title="@string/action_page_interested"
+  />
+
+  <item
+      android:id="@+id/action_page_going"
+      android:icon="@drawable/ic_notifications_black_24dp"
+      android:title="@string/action_page_going"
+  />
+
+</menu>

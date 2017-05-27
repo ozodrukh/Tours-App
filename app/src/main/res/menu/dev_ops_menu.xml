@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+      android:id="@+id/action_add_random_ticket"
+      android:title="@string/dev_ops_action_add_random_ticket"
+  />
+
+  <item
+      android:id="@+id/action_export_tickets"
+      android:title="@string/dev_ops_action_export_json"
+  />
+
+</menu>

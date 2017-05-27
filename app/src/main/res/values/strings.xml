@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">Travel Tours</string>
+  <string name="dev_ops_action_add_random_ticket">Add Random Ticket</string>
+  <string name="dev_ops_action_export_json">Export JSON</string>
+  <string name="action_page_home">Home</string>
+  <string name="action_page_interested">Interested</string>
+  <string name="action_page_going">Going</string>
+</resources>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <import type="io.codetail.airplanes.domain.Ticket"/>
+    <variable name="ticket" type="Ticket"/>
+  </data>
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:background="#2F71ED"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:weightSum="11">
+
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="5"
+      >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/departure_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{ticket.departure.city}"
+            tools:text="Tashkent"
+            style="@style/AppTheme.Ticket.City.Inverse"
+        />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/departure_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{ticket.departure.country}"
+            tools:text="Uzbekistan"
+            style="@style/AppTheme.Ticket.Country.Inverse"
+        />
+
+      </LinearLayout>
+
+      <ImageView
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:src="@drawable/ic_flight_takeoff_black_24dp"
+          android:tint="?android:textColorPrimaryInverse"
+      />
+
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="5"
+      >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/back_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{ticket.back.city}"
+            tools:text="Tashkent"
+            style="@style/AppTheme.Ticket.City.Inverse"
+        />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/back_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{ticket.back.country}"
+            tools:text="Uzbekistan"
+            style="@style/AppTheme.Ticket.Country.Inverse"
+        />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        style="@style/Widget.AppCompat.ButtonBar">
+
+      <Button
+          android:id="@+id/action_interested"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:textStyle="normal"
+          android:textColor="?android:textColorSecondary"
+          style="@style/Widget.AppCompat.Button.Borderless.Colored"
+          android:text="Interested"
+      />
+
+      <Button
+          android:id="@+id/action_going"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:drawableLeft="@drawable/ic_notifications_black_24dp"
+          android:drawableTint="?colorAccent"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          style="@style/Widget.AppCompat.Button.Borderless.Colored"
+          android:text="Going"
+      />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</layout>
