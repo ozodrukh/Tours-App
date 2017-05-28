@@ -12,6 +12,5 @@ import kotlin.reflect.KClass
  */
 
 
-fun <T : ViewModel> ViewModelProvider.get(clazz: KClass<T>,
-                                          key: String = clazz.qualifiedName ?: "no-name")
-        : T = get(key, clazz.java)
+inline fun <reified T : ViewModel> ViewModelProvider.get(key: String = T::class.java.name): T =
+        get(key, T::class.java)

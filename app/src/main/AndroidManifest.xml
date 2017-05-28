@@ -16,7 +16,8 @@
       </intent-filter>
     </activity>
 
-    <service android:name=".service.GoingTicketsObserverService"/>
+    <activity android:name=".screen.detail.TicketDetailsActivity"/>
+
   </application>
 
 </manifest>

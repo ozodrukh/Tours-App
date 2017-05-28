@@ -1,6 +1,7 @@
 package io.codetail.airplanes.screen
 
 import android.arch.lifecycle.ViewModel
+import android.content.ComponentName
 import com.google.firebase.FirebaseException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -44,11 +45,11 @@ class TicketsViewModel() : ViewModel() {
     /**
      * Updates ticket with new state. Performs asynchronous saving operation
      */
-    fun setUserInterestType(ticket: Ticket, userInterestType: UserInterestType) {
-        if (ticket.interestType == userInterestType) {
+    fun setUserInterestType(ticket: Ticket, interestType: UserInterestType) {
+        if (ticket.interestType == interestType) {
             ticket.interestType = UserInterestType.ORDINAL
         } else {
-            ticket.interestType = userInterestType
+            ticket.interestType = interestType
         }
 
         actionsExecutor.submit {
@@ -57,8 +58,8 @@ class TicketsViewModel() : ViewModel() {
     }
 
     /**
-     * Live Tickets are loaded from Firebase, to get cached tickets
-     * use {@link #tickets} instead
+     * Live Tickets are loaded from Firebase, to get cached getTickets
+     * use {@link #getTickets} instead
      */
     fun liveTickets(): Flowable<List<Ticket>> {
         if (!livePublisher.hasSubscribers()) {
@@ -78,27 +79,52 @@ class TicketsViewModel() : ViewModel() {
     }
 
     /**
-     * Loads tickets from database
+     * Flattens dictionary to the list so that first item is list and then
+     * sequence of related items
+     *
+     * Date -> Ticket, Ticket, Ticket
+     * Date -> Ticket
+     *
+     * @return flat objects list
+     */
+    fun liveTicketsByDate(): Flowable<List<Any>> {
+        return liveTickets().map(groupByDate())
+    }
+
+    /**
+     * Loads getTickets from database
      */
     fun tickets(interestType: UserInterestType = UserInterestType.ORDINAL): Flowable<List<Ticket>> {
         return database.ticketsService().find(interestType)
     }
 
     /**
-     * Maps just list of tickets to sequence of Date -> Tickets in the list
+     * Flattens dictionary to the list so that first item is list and then
+     * sequence of related items
+     *
+     * Date -> Ticket, Ticket, Ticket
+     * Date -> Ticket
+     *
+     * @return flat objects list
      */
-    fun separatedByDate(): Function<List<Ticket>, List<Any>> {
+    fun ticketsByDate(interestType: UserInterestType): Flowable<List<Any>> {
+        return tickets(interestType).map(groupByDate())
+    }
+
+    /**
+     * Maps list of getTickets to sequence of Date -> Tickets in the list
+     */
+    private fun groupByDate(): Function<List<Ticket>, List<Any>> {
         return Function<List<Ticket>, List<Any>> { tickets ->
-            tickets.groupBy { it.departure.date }
+            val group = tickets.groupBy { it.departure.date }
                     .map { entry -> listOf(entry.key, *entry.value.toTypedArray()) }
-                    .run {
-                        when (size) {
-                            0 -> emptyList()
-                            else -> reduce { acc, list ->
-                                (acc as? ArrayList ?: ArrayList(acc)).apply { addAll(list) }
-                            }
-                        }
-                    }
+
+            when (group.size) {
+                0 -> emptyList()
+                else -> group.reduce { acc, list ->
+                    (acc as? ArrayList ?: ArrayList(acc)).apply { addAll(list) }
+                }
+            }
         }
     }
 }

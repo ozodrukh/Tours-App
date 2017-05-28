@@ -1,6 +1,7 @@
 package io.codetail.airplanes.screen
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.ViewDataBinding
 import android.graphics.Canvas
 import android.os.Bundle
@@ -14,7 +15,6 @@ import android.view.View
 import android.view.View.NO_ID
 import android.view.ViewGroup
 import io.codetail.airplanes.R
-import io.codetail.airplanes.ToursApp
 import io.codetail.airplanes.databinding.*
 import io.codetail.airplanes.domain.Ticket
 import io.codetail.airplanes.domain.UserInterestType
@@ -24,6 +24,7 @@ import io.codetail.airplanes.global.BaseAdapter
 import io.codetail.airplanes.global.BindingLifecycleFragment
 import io.codetail.airplanes.global.Globals
 import io.codetail.airplanes.global.ObserverAdapter
+import io.codetail.airplanes.screen.detail.TicketDetailsActivity
 import io.reactivex.Flowable
 import timber.log.Timber
 
@@ -36,30 +37,30 @@ import timber.log.Timber
 class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
     enum class DataType {
         LIVE {
-            override fun tickets(viewModel: TicketsViewModel): Flowable<List<Ticket>> {
-                return viewModel.liveTickets()
+            override fun getTickets(viewModel: TicketsViewModel): Flowable<List<Any>> {
+                return viewModel.liveTicketsByDate()
             }
         },
 
         INTERESTED {
-            override fun tickets(viewModel: TicketsViewModel): Flowable<List<Ticket>> {
-                return viewModel.tickets(UserInterestType.INTERESTED)
+            override fun getTickets(viewModel: TicketsViewModel): Flowable<List<Any>> {
+                return viewModel.ticketsByDate(UserInterestType.INTERESTED)
             }
         },
 
         GOING {
-            override fun tickets(viewModel: TicketsViewModel): Flowable<List<Ticket>> {
-                return viewModel.tickets(UserInterestType.GOING)
+            override fun getTickets(viewModel: TicketsViewModel): Flowable<List<Any>> {
+                return viewModel.ticketsByDate(UserInterestType.GOING)
             }
         },
 
         NO_TICKETS {
-            override fun tickets(viewModel: TicketsViewModel): Flowable<List<Ticket>> {
+            override fun getTickets(viewModel: TicketsViewModel): Flowable<List<Any>> {
                 return Flowable.empty()
             }
         };
 
-        abstract fun tickets(viewModel: TicketsViewModel): Flowable<List<Ticket>>;
+        abstract fun getTickets(viewModel: TicketsViewModel): Flowable<List<Any>>;
     }
 
     override val layoutId: Int = R.layout.fragment_tours
@@ -69,15 +70,15 @@ class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
         get() = DataType.valueOf(dataTypeName)
 
     val viewModel by lazy {
-        ViewModelProviders.of(this).get(TicketsViewModel::class)
+        ViewModelProviders.of(this).get<TicketsViewModel>()
+                .apply { Timber.d("Instance hash: $this") }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d(arguments.toString())
 
-        val adapter = BaseAdapter<Any, ItemTicketOrdinalBinding>(lifecycle,
-                dataType.tickets(viewModel).map(viewModel.separatedByDate()))
+        val adapter = BaseAdapter<Any, ItemTicketOrdinalBinding>(lifecycle, dataType.getTickets(viewModel))
 
         adapter.add(object : BaseAdapter.BindingViewFactory<String, ItemTicketDateGroupBinding> {
             override val viewType: Int = R.layout.item_ticket_date_group
@@ -91,6 +92,7 @@ class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
             }
 
         })
+
         adapter.add(object : BaseAdapter.BindingViewFactory<Ticket, ItemTicketBaseBinding> {
             override val viewType: Int = R.layout.item_ticket_base
 
@@ -122,7 +124,6 @@ class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
                 }
             }
 
-
             fun collapseExpandedComponent(content: RecyclerView, factory: LayoutInflater) {
                 val adapter = (content.adapter as ObserverAdapter<*, *>)
                 if (expandedPosition >= adapter.itemCount) {
@@ -149,6 +150,11 @@ class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
             override fun bind(component: ItemTicketBaseBinding, data: Ticket, position: Int) {
                 val childComponent = component.sceneRoot.tag as ViewDataBinding;
                 bind(childComponent, data)
+
+                component.root.setOnLongClickListener {
+                    context.startActivity(Intent(context, TicketDetailsActivity::class.java))
+                    return@setOnLongClickListener true
+                }
 
                 component.root.setOnClickListener {
                     val parent = it as ViewGroup
@@ -211,4 +217,6 @@ class TicketsViewFragment : BindingLifecycleFragment<FragmentToursBinding>() {
             }
         })
     }
+
+
 }

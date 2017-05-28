@@ -1,7 +1,7 @@
 package io.codetail.airplanes.screen
 
-import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.NotificationCompat
 import android.text.format.Time
 import android.view.View
@@ -25,6 +24,7 @@ import io.codetail.airplanes.domain.UserInterestType
 import io.codetail.airplanes.ext.dp
 import io.codetail.airplanes.ext.get
 import io.codetail.airplanes.global.LazyDataBindingComponent
+import io.codetail.airplanes.global.LifecycleActivity
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -37,14 +37,9 @@ import timber.log.Timber
  * *
  * @version 1.0
  */
-class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
-    val lifecycleRegistry = LifecycleRegistry(this)
+class MainActivity : LifecycleActivity() {
     val componentLoader = LazyDataBindingComponent<ActivityMainBinding>();
     val viewComponent by componentLoader;
-
-    override fun getLifecycle(): LifecycleRegistry {
-        return lifecycleRegistry
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +71,12 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
         setContentView(viewComponent.root)
 
+        ViewModelProviders.of(this)
+                .get<TicketsViewModel>()
+                .apply { Timber.d("Instance hash: $this") }
+
         viewComponent.toolbar.setOnMenuItemClickListener { menu ->
-            val viewModel = ViewModelProviders.of(this).get(TicketsViewModel::class)
+            val viewModel = ViewModelProviders.of(this).get<TicketsViewModel>()
             when (menu.itemId) {
                 R.id.action_add_random_ticket ->
                     viewModel.add(Random.randomTicket(-1))
@@ -112,7 +111,7 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
                     0 -> "Live Tickets"
                     1 -> "Interested"
                     2 -> "Going"
-                    else -> "No tickets"
+                    else -> "No getTickets"
                 }
             }
 
