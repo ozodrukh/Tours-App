@@ -1,4 +1,4 @@
-package io.codetail.airplanes.screen
+package io.codetail.airplanes.screen.tickets
 
 import android.content.Context
 import android.graphics.Bitmap

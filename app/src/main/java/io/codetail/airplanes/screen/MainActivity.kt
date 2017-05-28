@@ -1,7 +1,5 @@
 package io.codetail.airplanes.screen
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
@@ -25,6 +23,9 @@ import io.codetail.airplanes.ext.dp
 import io.codetail.airplanes.ext.get
 import io.codetail.airplanes.global.LazyDataBindingComponent
 import io.codetail.airplanes.global.LifecycleActivity
+import io.codetail.airplanes.screen.tickets.BackgroundLoader
+import io.codetail.airplanes.screen.tickets.TicketsViewFragment
+import io.codetail.airplanes.screen.tickets.TicketsViewModel
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -144,26 +145,6 @@ class MainActivity : LifecycleActivity() {
             }, true)
             return@setOnNavigationItemSelectedListener true
         }
-
-        observeGoings()
-    }
-
-    fun observeGoings() {
-        ToursApp.self.database.ticketsService().find(UserInterestType.GOING)
-                .doOnNext { Timber.d("Raw Goings = $it") }
-                .flatMap { Flowable.fromArray(*it.toTypedArray()) }
-                .filter { isTomorrow(TICKET_DATE_FORMAT.parse(it.departure.date).time) }
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    Timber.d("Going to $it")
-                    NotificationManagerCompat.from(this).notify(it.id, NotificationCompat.Builder(this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("Don't miss")
-                            .setContentText("Tomorrow is departure to ${it.departure.city}")
-                            .build())
-                }
-                .subscribe()
     }
 
     /**
